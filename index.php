@@ -236,22 +236,25 @@ $tot_fee=$row_fee['tot_fee'];
 		
 			</p>
             <p>		</p>
-            <table width="1201" height="341" align="center">
+            <table width="100%" height="341" align="center">
               <tr>
-                <td width="1237"><table border="0" align="center" class="table table-hover no-margins">
+                <td width="100%"><table border="0" align="center" class="table table-hover no-margins">
                   <thead>
                     <tr>
-                      <th width="30%"><div align="center"><span class="style1">Fee </span></div></th>
-					  <th width="30%"><div align="center"><span class="style1">Hostel</span></div></th>
-                      <th width="63%"><div align="center" class="style1">Sport</div></th>
-					   <th width="63%"><div align="center" class="style1">Student Affairs</div></th>
+                      <th width="10%"><div align="center"><span class="style1">Fee </span></div></th>
+                      <th width="10%"><div align="center"><span class="style1">Academic Head </span></div></th>
+                      <th width="10%"><div align="center"><span class="style1">Faculty </span></div></th>
+                      <th width="10%"><div align="center"><span class="style1">Departmental Library </span></div></th>
+                      <th width="10%"><div align="center"><span class="style1">KIL </span></div></th>
+                      <th width="10%"><div align="center" class="style1">Sport</div></th>
+                      <th width="10%"><div align="center"><span class="style1">Hall Of Residence</span></div></th>
                     </tr>
                   </thead>
                   <tbody>
                    <tr>
 	
 				   
-				       <td>
+				    <td>
 					  <?php if (($outstanding_fee)==(("0")))  { ?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
 					   <?php } else {?>
@@ -259,6 +262,29 @@ $tot_fee=$row_fee['tot_fee'];
  						<?php } ?>
 				     </td>
 						
+                     <td>
+					   	 <?php if (($rowaccess['is_hostel_approved'])==(("0")))  { ?>
+					   <div align="center"><span class="label label-warning">Pending</span> </div>
+					   <?php } else {?>
+					   <div align="center"><span class="label label-primary">Cleared</span> </div>
+ 						<?php } ?>
+				     </td>
+
+                     <td>
+					   	 <?php if (($rowaccess['is_hostel_approved'])==(("0")))  { ?>
+					   <div align="center"><span class="label label-warning">Pending</span> </div>
+					   <?php } else {?>
+					   <div align="center"><span class="label label-primary">Cleared</span> </div>
+ 						<?php } ?>
+				     </td>
+
+                     <td>
+					   	 <?php if (($rowaccess['is_hostel_approved'])==(("0")))  { ?>
+					   <div align="center"><span class="label label-warning">Pending</span> </div>
+					   <?php } else {?>
+					   <div align="center"><span class="label label-primary">Cleared</span> </div>
+ 						<?php } ?>
+				     </td>
 						
 				       <td>
 					   	 <?php if (($rowaccess['is_hostel_approved'])==(("0")))  { ?>

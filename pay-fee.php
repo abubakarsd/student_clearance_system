@@ -124,7 +124,7 @@ else {return false;
         <ul class="nav metismenu" id="side-menu">
             <li class="nav-header">
                 <div class="dropdown profile-element"> <span>
-                        <img src="<?php echo $rowaccess['photo'];  ?>" alt="image" width="142" height="153" class="img-circle" />
+                        <img src="<?php echo $rowaccess['photo'];  ?>" alt="image" width="100" height="100" class="img-circle" />
                          </span>
 
 
