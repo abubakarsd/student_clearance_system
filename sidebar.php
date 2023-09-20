@@ -15,7 +15,7 @@
                     <a href="#"><i class="fa fa-bookmark"></i> <span class="nav-label">Clearance</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse">
                     <li><a href="clearance.php">Apply Clearance</a></li>
-                    <li><a href="pay-fee.php">Pay fee</a></li>
+                    <li><a href="pay-fee.php">Clearance fee</a></li>
                     <li><a href="fee-history.php">payment History</a></li>
                     </ul>
                 </li>

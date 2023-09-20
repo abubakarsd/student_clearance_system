@@ -30,17 +30,52 @@ if(empty($_SESSION['matric_no']))
     
     $outstanding_fee=$tot_fee-$tot_pay;
 
-$sql = "select * from students where matric_no='$matric_no'"; 
+    if ($tot_fee == $tot_pay) {
+        $paystatus = '<div align="center"><i class="fa fa-check-circle" style="font-size:28px;color:green"></i> Clearance fee Paid</div>';
+    } else {
+        $paystatus = '<div align="center"><i class="fa fa-times-circle" style="font-size:28px;color:orange"></i>Pending</div>';
+    }
+
+// Check if student has been cleared
+$checkSQL = "SELECT *
+    FROM clearance_apply
+    WHERE 
+        is_accademic_head >= 2
+        AND is_faculty >= 2
+        AND is_dip_library >= 2
+        AND is_kill >= 2
+        AND is_sport >= 2
+        AND is_hostel >= 2
+        AND student_id = $ID";
+
+$checkRslt = $conn->query($checkSQL);
+
+if ($checkRslt->num_rows > 0) {
+    // Student has been cleared
+    $clearanceResult = '<div align="center"><a href="result.php" target="_blank"><span class="label label-primary"><i class="fa fa-download"></i> Download Result</span></a></div>';
+    $clearedStt = '<div align="center"><i class="fa fa-check-circle" style="font-size:28px;color:green"></i> Cleared</div>
+    <span class="style2"><small> <a href="letter.php" target="_blank">Print Clearance Letter</a></small></span>
+    ';
+} else {
+    // Student has not been cleared
+    $clearanceResult = '<div align="center"><span class="label label-danger">Result not Ready</span></div>';
+    $clearedStt = '<div align="left"><i class="fa fa-times-circle" style="font-size:28px;color:orange"></i> Pending</div>';
+}
+
+$sql = "SELECT * FROM clearance_apply WHERE student_id = $ID"; 
 $result = $conn->query($sql);
 $rowaccess = mysqli_fetch_array($result);
 
-$hostel = $rowaccess["is_hostel_approved"];
-$sport = $rowaccess['is_sport_approved'];
-$stud_affairs = $rowaccess['is_stud_affairs_approved'];
+$academy_head = $rowaccess["is_accademic_head"];
+$faculty_cle = $rowaccess["is_faculty"];
+$dip_library = $rowaccess["is_dip_library"];
+$kill_library = $rowaccess["is_kill"];
+$is_sport = $rowaccess["is_sport"];
+$is_hostel = $rowaccess["is_hostel"];
 
-date_default_timezone_set('Africa/Lagos');
-$current_date = date('Y-m-d H:i:s');
-
+$sql = "select * from students where matric_no='$matric_no'"; 
+$result = $conn->query($sql);
+$rowaccess = mysqli_fetch_array($result);
 ?>
 		   
 <!DOCTYPE html>
@@ -84,7 +119,7 @@ $current_date = date('Y-m-d H:i:s');
             <ul class="nav metismenu" id="side-menu">
                 <li class="nav-header">
                     <div class="dropdown profile-element"> <span>
-                            <img src="<?php echo $rowaccess['photo'];  ?>" alt="image" width="142" height="153" class="img-circle" />
+                    <img src="<?php echo $rowaccess['photo'];  ?>" alt="image" width="100" height="100" class="img-circle" />
                              </span>
   
    
@@ -135,31 +170,13 @@ $current_date = date('Y-m-d H:i:s');
         </nav>
         </div>
 <div class="wrapper wrapper-content">
-        <div class="row">
-		<?php 
-                 
-    $query = "SELECT * FROM students "; 
-       $result = mysqli_query($conn, $query); 
-      
-    if ($result) 
-    { 
-        // it return number of rows in the table. 
-        $row_students = mysqli_num_rows($result); 
-          
-    }
-   
-    $sql = "select SUM(amount) as tot_fee from fee where faculty='$faculty' AND dept='$dept'"; 
-$result = $conn->query($sql);
-$row_fee = mysqli_fetch_array($result);
-$tot_fee=$row_fee['tot_fee'];   
-    ?>
-	  
+        <div class="row">	  
 			       
 					    <div class="col-lg-3">
                         <div class="ibox float-e-margins">
                             <div class="ibox-title">
-                              <h5><span class="label label-primary pull-right">Total Fee </span>
-</h5>
+                              <h5><span class="label label-primary pull-right">Clearance Fee </span>
+                              </h5>
                             </div>
 							
                             <div class="ibox-content">
@@ -167,20 +184,19 @@ $tot_fee=$row_fee['tot_fee'];
                                 <small> </small> 
 						  </div>
                         </div>
-                    </div>             
-					
-				
-<div class="col-lg-3">
+                    </div>
+
+                    <div class="col-lg-3">
                         <div class="ibox float-e-margins">
                             <div class="ibox-title">
-                              <h5><span class="label label-secondary pull-right">Amount Paid</span>
-</h5>
+                              <h5><span class="label label-secondary pull-right">Payment Status</span>
+                              </h5>
                             </div>
 							
                             <div class="ibox-content">
-                                <h3 class="no-margins">NGN<?php echo number_format((float) $tot_pay ,2); ?></h3>
-                                <small> </small> 
+                                <?php echo $paystatus; ?>
 						  </div>
+                         
                         </div>
                     </div>    
 					
@@ -189,42 +205,24 @@ $tot_fee=$row_fee['tot_fee'];
                         <div class="ibox float-e-margins">
                             <div class="ibox-title">
                               <h5><span class="label label-info pull-right">Status</span>
-</h5>
+                              </h5>
                             </div>
 							
                           <div class="ibox-content">
                               <h3 class="no-margins">
-						  
-							  <?php if (($outstanding_fee)=="0" && ($sport)=="1" &&($hostel)=="1" && ($stud_affairs)=="1")  { ?>
-						<div align="center"><i class="fa fa-check-circle" style="font-size:28px;color:green"></i>
-						<?php echo "Cleared"; ?></div>
-							 <?php } else {?>
-						<div align="left"><i class="fa fa-times-circle" style="font-size:28px;color:orange"></i>
-<?php echo "Pending"; ?></div>
-	  <?php } ?> </h3>
-                                <p class="no-margins">&nbsp;</p>
-								<?php if (($outstanding_fee)=="0" && ($sport)=="1" &&($hostel)=="1" && ($stud_affairs)=="1")  { ?>
-                                <span class="style2"><small> <a href="letter.php" target="_blank">Print Clearance Letter</a></small></span>	
-								
-									
-								 <?php } ?>
-												  </div>
+                              <?php echo $clearedStt; ?>
+                            </div>
                         </div>
-                    </div>    
-					
-					
-					    
-					
-							                  <div class="col-lg-3">
+                    </div>
+                    <div class="col-lg-3">
                         <div class="ibox float-e-margins">
                             <div class="ibox-title">
-                              <h5><span class="label label-success pull-right">Outstanding fee</span>
-</h5>
+                              <h5><span class="label label-success pull-right">Statement Of Result</span>
+                              </h5>
                             </div>
 							
                             <div class="ibox-content">
-                                <h3 class="no-margins">NGN<?php echo number_format((float) $outstanding_fee ,2); ?>  </h3>
-                                <small> </small> 
+                                <?php echo $clearanceResult; ?>
 						  </div>
                         </div>
                     </div>             
@@ -263,7 +261,7 @@ $tot_fee=$row_fee['tot_fee'];
 				     </td>
 						
                      <td>
-					   	 <?php if (($rowaccess['is_hostel_approved'])==(("0")))  { ?>
+					   	 <?php if ($academy_head < 2)  { ?>
 					   <div align="center"><span class="label label-warning">Pending</span> </div>
 					   <?php } else {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
@@ -271,7 +269,7 @@ $tot_fee=$row_fee['tot_fee'];
 				     </td>
 
                      <td>
-					   	 <?php if (($rowaccess['is_hostel_approved'])==(("0")))  { ?>
+					   	 <?php if ($faculty_cle < 2)  { ?>
 					   <div align="center"><span class="label label-warning">Pending</span> </div>
 					   <?php } else {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
@@ -279,7 +277,7 @@ $tot_fee=$row_fee['tot_fee'];
 				     </td>
 
                      <td>
-					   	 <?php if (($rowaccess['is_hostel_approved'])==(("0")))  { ?>
+					   	 <?php if ($dip_library < 2)  { ?>
 					   <div align="center"><span class="label label-warning">Pending</span> </div>
 					   <?php } else {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
@@ -287,7 +285,7 @@ $tot_fee=$row_fee['tot_fee'];
 				     </td>
 						
 				       <td>
-					   	 <?php if (($rowaccess['is_hostel_approved'])==(("0")))  { ?>
+					   	 <?php if ($kill_library < 2)  { ?>
 					   <div align="center"><span class="label label-warning">Pending</span> </div>
 					   <?php } else {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
@@ -295,7 +293,7 @@ $tot_fee=$row_fee['tot_fee'];
 				     </td>
 						
                       <td>
-					   	 <?php if (($rowaccess['is_sport_approved'])==(("0")))  { ?>
+					   	 <?php if ($is_sport < 2)  { ?>
 					   <div align="center"><span class="label label-warning">Pending</span> </div>
 					   <?php } else {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
@@ -304,7 +302,7 @@ $tot_fee=$row_fee['tot_fee'];
 						
 						
 						 <td>
-					   	 <?php if (($rowaccess['is_stud_affairs_approved'])==(("0")))  { ?>
+					   	 <?php if ($is_hostel < 2)  { ?>
 					   <div align="center"><span class="label label-warning">Pending</span> </div>
 					   <?php } else {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>

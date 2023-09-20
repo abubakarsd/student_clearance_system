@@ -229,7 +229,7 @@ else {return false;
                             <div class="col-sm-6">
                                 
                                 <p class="text-center">&nbsp;</p>
-                                <p class="text-center style1"><strong>SCHOOL FEES :</strong>    <span class="badge badge-info">NGN<?php echo number_format((float) $tot_fee ,2); ?></span></p>
+                                <p class="text-center style1"><strong>CLEARANCE FEES :</strong>    <span class="badge badge-info">NGN<?php echo number_format((float) $tot_fee ,2); ?></span></p>
                                 <p class="text-center style1"><strong>TOTAL PAID :</strong>  <span class="badge badge-warning">NGN<?php echo number_format((float) $tot_pay ,2); ?></span>   </p>
                                 <p class="text-center style1"><strong>OUTSTANDING FEE :</strong>  <span class="badge badge-primary">NGN<?php echo number_format((float) $outstanding_fee ,2); ?></span>   </p>
                                 
