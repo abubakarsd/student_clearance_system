@@ -17,7 +17,9 @@ $current_date = date('Y-m-d');
 $result = $conn->query($sql);
 $row2 = mysqli_fetch_array($result);
 
-    ?>
+$user_type = $row2['designation'];
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -107,9 +109,12 @@ $row2 = mysqli_fetch_array($result);
                with font-awesome or any other icon font library -->
          
 		 <?php
-			   include('sidebar.php');
-			   
-			   ?>
+     if ($user_type == 'Admin') {
+      include('sidebar.php'); 
+     } else {
+      include('office-sidebar.php'); 
+     }
+     ?>
 		 
 		 
         </ul>

@@ -18,6 +18,8 @@ $sql = "select * from admin where username='$username'";
 $result = $conn->query($sql);
 $row= mysqli_fetch_array($result);
 
+$user_type = $row2['designation'];
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -162,11 +164,13 @@ else {return false;
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-         
-		 <?php
-			   include('sidebar.php');
-			   
-			   ?>
+               <?php
+                if ($user_type == 'Admin') {
+                  include('sidebar.php'); 
+                } else {
+                  include('office-sidebar.php'); 
+                }
+                ?>
 		 
 		 
         </ul>

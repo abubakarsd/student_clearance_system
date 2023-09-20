@@ -26,7 +26,7 @@ $user_type = $row2['designation'];
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Student Clearance|Dashboard</title>
+  <title>Student Record|Dashboard</title>
 <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon.png">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -54,8 +54,8 @@ $user_type = $row2['designation'];
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
   
  <script type="text/javascript">
-function clear_student(matric_no){
-if(confirm("ARE YOU SURE YOU WISH TO CLEAR STUDENT WITH MATRIC NO. " + " " + matric_no + " " + " FOR NYSC/GRADUATION ?"))
+function Activate(fullname){
+if(confirm("ARE YOU SURE YOU WISH TO Activate " + " " + username+ " " + " ON THE LIST?"))
 {
 return  true;
 }
@@ -64,7 +64,30 @@ else {return false;
 	 
 }
 </script>
+<script type="text/javascript">
+function Deactivate(fullname){
+if(confirm("ARE YOU SURE YOU WISH TO Deactivate " + " " + username+ " " + " ON THE LIST?"))
+{
+return  true;
+}
+else {return false;
+}
+	 
+}
 
+</script>
+<script type="text/javascript">
+		function deldata(fullname){
+if(confirm("ARE YOU SURE YOU WISH TO DELETE " + " " + fullname+ "FROM THE DATABASE ?" ))
+{
+return  true;
+}
+else {return false;
+}
+	 
+}
+
+</script>
   <style type="text/css">
 <!--
 .style7 {vertical-align:middle; cursor:pointer; -webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none; border:1px solid transparent; padding:.375rem .75rem; line-height:1.5; border-radius:.25rem;transition:color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out; display: inline-block; color: #212529; text-align: center;}
@@ -81,8 +104,7 @@ else {return false;
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>      </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <a href="#" class="nav-link">Home</a>     
-         </li>
+        <a href="#" class="nav-link">Home</a>      </li>
       
     </ul>
 
@@ -149,6 +171,8 @@ else {return false;
                   include('office-sidebar.php'); 
                 }
                 ?>
+		 
+		 
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -168,7 +192,7 @@ else {return false;
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Student Clearance</li>
+              <li class="breadcrumb-item active">Student Record</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -186,7 +210,7 @@ else {return false;
             <tr>
               <td width="1090" height="184"><div class="card">
                 <div class="card-header">
-                  <h4>Student Record </h4>
+                  <h4>Clearance Request</h4>
                 </div>
                 <!-- /.card-header -->
                 <div class="card-body">
@@ -194,54 +218,39 @@ else {return false;
                     <thead>
                     <th width="10%"><div align="center">Fullname</div></th>
 							          <th width="7%"><div align="center">Photo</div></th>
+                        <th width="5%"><div align="center">Phone</div></th>
                         <th width="5%"><div align="center">Matric No</div></th>
-                        <th width="5%"><div align="center">Hostel Status</div></th>
-                        <th width="6%"><div align="center">Sport Status</div></th>
-						           <th width="5%"><div align="center">Student Affairs Status</div></th>
-                        
+                        <th width="6%"><div align="center">Faculty</div></th>
+						           <th width="5%"><div align="center">Dept</div></th>
+                       <th width="5%"><div align="center">Action</div></th>
+
 				     						    </tr>
                     </thead>
                       <div align="center"></div>
                     
                     <tbody>
-                                      <?php 
-                                         $sql = "SELECT * FROM students order by ID ASC";
-
+                    <?php 
+                                          $sql = "SELECT * FROM students order by ID ASC";
                                            $result = $conn->query($sql);
                                            while($row = $result->fetch_assoc()) { ?>
                       <tr class="gradeX">
                         <td height="104"><div align="center"><?php echo $row['fullname']; ?> </div></td>
 					 <td><div align="center"><span class="controls"><img src="../<?php echo $row['photo'];?>"  width="91" height="73" border="2"/></span></div></td>
+                        <td><div align="center"><?php echo $row['phone']; ?></div></td>
                         <td><div align="center"><?php echo $row['matric_no']; ?></div></td>
-                        <td>
-						<?php if (($row['is_hostel_approved'])==(('1')))  { ?>
-						<div align="center"><span class="badge badge-success">Cleared</span></div>
-							 <?php } else {?>
-<div align="center"><a href="clear_hostel.php?id=<?php echo $row['ID'];?>" onClick="return clear_student('<?php echo $row['matric_no']; ?>');"><i class="fa fa-check" title="Click to Clear Student"> <span class="badge badge-warning">Pending</span></i> </a>
-</div>
-
-<?php } ?>
-</td>                        
-<td>
-						<?php if (($row['is_sport_approved'])==(('1')))  { ?>
-						<div align="center"><span class="badge badge-success">Cleared</span></div>
-							 <?php } else {?>
-<div align="center"><a href="clear_sport.php?id=<?php echo $row['ID'];?>" onClick="return clear_student('<?php echo $row['matric_no']; ?>');"><i class="fa fa-check" title="Click to Clear Student"> <span class="badge badge-warning">Pending</span></i> </a>
-</div>
-
-<?php } ?>
-</td>                   
-<td>
-						<?php if (($row['is_stud_affairs_approved'])==(('1')))  { ?>
-						<div align="center"><span class="badge badge-success">Cleared</span></div>
-							 <?php } else {?>
-<div align="center"><a href="clear_student_affairs.php?id=<?php echo $row['ID'];?>" onClick="return clear_student('<?php echo $row['matric_no']; ?>');"><i class="fa fa-check" title="Click to Clear Student"> <span class="badge badge-warning">Pending</span></i> </a>
-</div>
-
-<?php } ?>
-</td>                   
-                
-					
+                        <td><div align="center"><?php echo $row['faculty']; ?></div></td>
+                        <td><div align="center"><?php echo $row['dept']; ?></div></td>
+                        <td>     <div class="btn-group">
+                    <button type="button" class="btn btn-danger btn-flat">Action</button>
+                    <button type="button" class="btn btn-danger btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                      <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu" role="menu">
+                      <a class="dropdown-item" href="delete-student.php?id=<?php echo $row['ID'];?>" onClick="return deldata('<?php echo $row['fullname']; ?> ');">Delete</a>
+					 
+                    </div>
+                  </div>
+                </td>
                     </tr>
 					<?php } ?>
                     </tbody>
