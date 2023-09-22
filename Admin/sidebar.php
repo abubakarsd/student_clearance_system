@@ -11,7 +11,7 @@
       <li class="nav-item">
             <a href="#" class="nav-link">
               <p>
-               User Management
+               Management
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>
@@ -28,6 +28,20 @@
                 <a href="admin-record.php" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Users Record</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="add-faculty.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Faculy</p>
+                </a>
+              </li>
+
+              <li class="nav-item">
+                <a href="add-department.php" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Department</p>
                 </a>
               </li>
              </ul>
@@ -74,7 +88,7 @@
 	 <li class="nav-item">
             <a href="#" class="nav-link">
               <p>
-               Fee Management
+               Clearance Fee Management
                 <i class="fas fa-angle-left right"></i>
               </p>
             </a>

@@ -14,11 +14,12 @@ if(empty($_SESSION['admin-username']))
 date_default_timezone_set('Africa/Lagos');
 $current_date = date('Y-m-d');	
 	
-$sql = "select * from admin where username='$username'"; 
+$sql = "select * from admin where username ='$username'"; 
 $result = $conn->query($sql);
-$row= mysqli_fetch_array($result);
-
+$row2 = mysqli_fetch_array($result);
 $user_type = $row2['designation'];
+$user_dip = $row2['department_id'];
+$user_facult = $row2['faculty_id']; 
 
 ?>
 <!DOCTYPE html>
@@ -77,8 +78,8 @@ else {return false;
 
 </script>
 <script type="text/javascript">
-		function deldata(fullname){
-if(confirm("ARE YOU SURE YOU WISH TO DELETE " + " " + fullname+ "FROM THE DATABASE ?" ))
+		function apprdata(fullname){
+if(confirm("Are you sure you want to approve " + fullname+ " clearance request ?"))
 {
 return  true;
 }
@@ -141,9 +142,9 @@ else {return false;
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="../<?php echo $row['photo'];  ?>" alt="User Image" width="220" height="192" class="img-circle elevation-2">        </div>
+          <img src="../<?php echo $row2['photo'];  ?>" alt="User Image" width="220" height="192" class="img-circle elevation-2">        </div>
         <div class="info">
-          <a href="#" class="d-block"><?php echo $row['fullname'];  ?></a>
+          <a href="#" class="d-block"><?php echo $row2['fullname'];  ?></a>
         </div>
       </div>
 
@@ -218,10 +219,15 @@ else {return false;
                     <thead>
                     <th width="10%"><div align="center">Fullname</div></th>
 							          <th width="7%"><div align="center">Photo</div></th>
-                        <th width="5%"><div align="center">Phone</div></th>
                         <th width="5%"><div align="center">Matric No</div></th>
                         <th width="6%"><div align="center">Faculty</div></th>
-						           <th width="5%"><div align="center">Dept</div></th>
+                        <th width="6%"><div align="center">Department</div></th>
+                        <th width="6%"><div align="center">Academic Head</div></th>
+						           <th width="5%"><div align="center">Faculty</div></th>
+                       <th width="5%"><div align="center">Department Library</div></th>
+                       <th width="5%"><div align="center">Kill Library</div></th>
+                       <th width="5%"><div align="center">Sport</div></th>
+                       <th width="5%"><div align="center">Hall Admin</div></th>
                        <th width="5%"><div align="center">Action</div></th>
 
 				     						    </tr>
@@ -230,29 +236,97 @@ else {return false;
                     
                     <tbody>
                     <?php 
-                                          $sql = "SELECT * FROM students order by ID ASC";
-                                           $result = $conn->query($sql);
-                                           while($row = $result->fetch_assoc()) { ?>
+                    $sql = "SELECT *
+                    FROM students 
+                    INNER JOIN clearance_apply ON students.ID = clearance_apply.student_id
+                    INNER JOIN faculty_tb ON students.faculty = faculty_tb.id 
+                    INNER JOIN department_tb ON students.dept = department_tb.id 
+                    WHERE students.faculty = $user_facult 
+                    AND students.dept = $user_dip
+                    ORDER BY clearance_apply.is_data_add ASC";
+                    $result = $conn->query($sql);
+                    while($row = $result->fetch_assoc()) { ?>
                       <tr class="gradeX">
                         <td height="104"><div align="center"><?php echo $row['fullname']; ?> </div></td>
-					 <td><div align="center"><span class="controls"><img src="../<?php echo $row['photo'];?>"  width="91" height="73" border="2"/></span></div></td>
-                        <td><div align="center"><?php echo $row['phone']; ?></div></td>
+                        <td><div align="center"><span class="controls"><img src="../<?php echo $row['photo'];?>"  width="91" height="73" border="2"/></span></div></td>
                         <td><div align="center"><?php echo $row['matric_no']; ?></div></td>
-                        <td><div align="center"><?php echo $row['faculty']; ?></div></td>
-                        <td><div align="center"><?php echo $row['dept']; ?></div></td>
-                        <td>     <div class="btn-group">
-                    <button type="button" class="btn btn-danger btn-flat">Action</button>
-                    <button type="button" class="btn btn-danger btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                      <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <div class="dropdown-menu" role="menu">
-                      <a class="dropdown-item" href="delete-student.php?id=<?php echo $row['ID'];?>" onClick="return deldata('<?php echo $row['fullname']; ?> ');">Delete</a>
-					 
+                        <td><div align="center"><?php echo $row['faculty_name']; ?></div></td>
+                    <td><div align="center"><?php echo $row['department_name']; ?></div></td>
+                    <td>
+                    <?php if (($row['is_accademic_head'])==(('2')))  { ?>
+                    <div align="center"><span class="badge badge-success">Cleared</span></div>
+                    <?php } else if (($row['is_accademic_head'])==(('3'))) {?>
+                    <div align="center"><span class="badge badge-danger">Reje</span></i>
                     </div>
-                  </div>
-                </td>
-                    </tr>
-					<?php } ?>
+                    <?php } else {?>
+                      <div align="center"><span class="badge badge-warning">Pending</span></i>
+                      <?php } ?>
+                    </td>                        
+                    <td>
+                    <?php if (($row['is_faculty'])==(('2')))  { ?>
+                    <div align="center"><span class="badge badge-success">Cleared</span></div>
+                    <?php } else if (($row['is_faculty'])==(('3'))) {?>
+                    <div align="center"><span class="badge badge-danger">Rejected</span></i>
+                    </div>
+                    <?php } else {?>
+                      <div align="center"><span class="badge badge-warning">Pending</span></i>
+                      <?php } ?>
+                    </td>                   
+                    <td>
+                    <?php if (($row['is_dip_library'])==(('2')))  { ?>
+                      <div align="center"><span class="badge badge-success">Cleared</span></div>
+                    <?php } else if (($row['is_dip_library'])==(('3'))) {?>
+                    <div align="center"><span class="badge badge-danger">Rejected</span></i>
+                    </div>
+                    <?php } else {?>
+                      <div align="center"><span class="badge badge-warning">Pending</span></i>
+                      <?php } ?>
+                    </td> 
+                        <td>
+                    <?php if (($row['is_kill'])==(('2')))  { ?>
+                      <div align="center"><span class="badge badge-success">Cleared</span></div>
+                    <?php } else if (($row['is_kill'])==(('3'))) {?>
+                    <div align="center"><span class="badge badge-danger">Rejected</span></i>
+                    </div>
+                    <?php } else {?>
+                      <div align="center"><span class="badge badge-warning">Pending</span></i>
+                      <?php } ?>
+                    </td> 
+                        <td>
+                        <?php if (($row['is_sport'])==(('2')))  { ?>
+                          <div align="center"><span class="badge badge-success">Cleared</span></div>
+                    <?php } else if (($row['is_sport'])==(('3'))) {?>
+                    <div align="center"><span class="badge badge-danger">Rejected</span></i>
+                    </div>
+                    <?php } else {?>
+                      <div align="center"><span class="badge badge-warning">Pending</span></i>
+                      <?php } ?>
+                    </td> 
+                        <td>
+                        <?php if (($row['is_hostel'])==(('2')))  { ?>
+                          <div align="center"><span class="badge badge-success">Cleared</span></div>
+                    <?php } else if (($row['is_hostel'])==(('3'))) {?>
+                    <div align="center"><span class="badge badge-danger">Rejected</span></i>
+                    </div>
+                    <?php } else {?>
+                      <div align="center"><span class="badge badge-warning">Pending</span></i>
+                      <?php } ?>
+                    </td> 
+                        <td>     
+                        <div class="btn-group">
+                        <button type="button" class="btn btn-danger btn-flat">Action</button>
+                            <button type="button" class="btn btn-danger btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                              <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu" role="menu">
+                              <a class="dropdown-item" href="approve-clearance.php?id=<?php echo $row['ID'];?>" onClick="return apprdata('<?php echo $row['fullname']; ?> ');">Approve Clearance</a>
+                              <a class="dropdown-item" href="reject-student.php?id=<?php echo $row['ID'];?>" onClick="return rejdata('<?php echo $row['fullname']; ?> ');">Reject Clearance</a>
+                  
+                            </div>
+                          </div>
+                        </td>
+                        </tr>
+                        <?php } ?>
                     </tbody>
                     <tfoot>
                     </tfoot>

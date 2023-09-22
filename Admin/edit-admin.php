@@ -16,7 +16,7 @@ $id=$_GET['id'];
 date_default_timezone_set('Africa/Lagos');
 $current_date = date('Y-m-d H:i:s');
 
-$sql = "select * from admin where username='$username'"; 
+$sql = "select * from admin where ID='$id'"; 
 $result = $conn->query($sql);
 $rowaccess= mysqli_fetch_array($result);
 
@@ -199,14 +199,16 @@ $_SESSION['error']='Editing Was Not Successful';
                   <div class="form-group">
                     <label for="exampleInputPassword1">Designation</label>
                     <select name="cmddesignation" id="select" class="form-control" required="">
-    <option value="<?php echo $rowaccess['designation']; ?>"><?php echo $rowaccess['designation']; ?></option>
-   <option value="Super Admin">Super Admin</option>
-   <option value="Librarian">Librarian</option>
-   <option value="Bursar">Bursar</option>
-   <option value="Sport Director">Sport Director</option>
-
-   </select> 
-  </div>
+                    <option value="<?php echo $rowaccess['designation']; ?>"><?php echo $rowaccess['designation']; ?></option>
+                    <option value="Super Admin">Super Admin</option>
+                    <option value="Academy_head">Academy Head</option>
+                    <option value="faculty">Faculty Deans</option>
+                    <option value="dip_library">Department Library</option>
+                    <option value="kil_library">Kil Library</option>
+                    <option value="sport_head">Sport Unit</option>
+                    <option value="hall_admin">Hall Admin</option>
+                    </select> 
+                     </div>
                   
                   
                 </div>

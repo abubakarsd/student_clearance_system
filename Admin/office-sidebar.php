@@ -23,14 +23,6 @@
                   <p>Clearance Request</p>
                 </a>
               </li>
-
-			   <li class="nav-item">
-                <a href="clearance-record.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Clearance Record</p>
-                </a>
-              </li>
-
              </ul>
           </li>
 

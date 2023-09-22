@@ -142,13 +142,7 @@ else {return false;
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-               <?php
-                if ($user_type == 'Admin') {
-                  include('sidebar.php'); 
-                } else {
-                  include('office-sidebar.php'); 
-                }
-                ?>
+               <?php include('sidebar.php'); ?>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -195,55 +189,77 @@ else {return false;
                     <th width="10%"><div align="center">Fullname</div></th>
 							          <th width="7%"><div align="center">Photo</div></th>
                         <th width="5%"><div align="center">Matric No</div></th>
-                        <th width="5%"><div align="center">Hostel Status</div></th>
-                        <th width="6%"><div align="center">Sport Status</div></th>
-						           <th width="5%"><div align="center">Student Affairs Status</div></th>
-                        
-				     						    </tr>
+                        <th width="5%"><div align="center">Department</div></th>
+                        <th width="6%"><div align="center">Academic Head</div></th>
+						           <th width="5%"><div align="center">Faculty</div></th>
+                       <th width="5%"><div align="center">Department Library</div></th>
+                       <th width="5%"><div align="center">Kill Library</div></th>
+                       <th width="5%"><div align="center">Sport</div></th>
+                       <th width="5%"><div align="center">Hall Admin</div></th>
+                      </tr>
                     </thead>
                       <div align="center"></div>
                     
                     <tbody>
-                                      <?php 
-                                         $sql = "SELECT * FROM students order by ID ASC";
-
-                                           $result = $conn->query($sql);
-                                           while($row = $result->fetch_assoc()) { ?>
-                      <tr class="gradeX">
-                        <td height="104"><div align="center"><?php echo $row['fullname']; ?> </div></td>
-					 <td><div align="center"><span class="controls"><img src="../<?php echo $row['photo'];?>"  width="91" height="73" border="2"/></span></div></td>
-                        <td><div align="center"><?php echo $row['matric_no']; ?></div></td>
+                    <?php
+                    $sql = "SELECT * FROM students INNER JOIN clearance_apply ON students.ID = clearance_apply.student_id INNER JOIN department_tb ON students.dept = department_tb.id ORDER BY clearance_apply.is_data_add ASC";
+                    $result = $conn->query($sql);
+                    while($row = $result->fetch_assoc()) { ?>
+                    <tr class="gradeX">
+                    <td height="104"><div align="center"><?php echo $row['fullname']; ?> </div></td>
+                    <td><div align="center"><span class="controls"><img src="../<?php echo $row['photo'];?>"  width="91" height="73" border="2"/></span></div></td>
+                    <td><div align="center"><?php echo $row['matric_no']; ?></div></td>
+                    <td><div align="center"><?php echo $row['department_name']; ?></div></td>
+                    <td>
+                    <?php if (($row['is_accademic_head'])==(('2')))  { ?>
+                    <div align="center"><span class="badge badge-success">Cleared</span></div>
+                    <?php } else {?>
+                    <div align="center"><span class="badge badge-warning">Pending</span></i>
+                    </div>
+                    <?php } ?>
+                    </td>                        
+                    <td>
+                    <?php if (($row['is_faculty'])==(('2')))  { ?>
+                    <div align="center"><span class="badge badge-success">Cleared</span></div>
+							      <?php } else {?>
+                    <div align="center"><span class="badge badge-warning">Pending</span>
+                    </div>
+                    <?php } ?>
+                    </td>                   
+                    <td>
+                    <?php if (($row['is_dip_library'])==(('2')))  { ?>
+                      <div align="center"><span class="badge badge-success">Cleared</span></div>
+                      <?php } else {?>
+                        <div align="center"><span class="badge badge-warning">Pending</span>
+                        </div>
+                        <?php } ?>
+                        </td>
                         <td>
-						<?php if (($row['is_hostel_approved'])==(('1')))  { ?>
-						<div align="center"><span class="badge badge-success">Cleared</span></div>
-							 <?php } else {?>
-<div align="center"><a href="clear_hostel.php?id=<?php echo $row['ID'];?>" onClick="return clear_student('<?php echo $row['matric_no']; ?>');"><i class="fa fa-check" title="Click to Clear Student"> <span class="badge badge-warning">Pending</span></i> </a>
-</div>
-
-<?php } ?>
-</td>                        
-<td>
-						<?php if (($row['is_sport_approved'])==(('1')))  { ?>
-						<div align="center"><span class="badge badge-success">Cleared</span></div>
-							 <?php } else {?>
-<div align="center"><a href="clear_sport.php?id=<?php echo $row['ID'];?>" onClick="return clear_student('<?php echo $row['matric_no']; ?>');"><i class="fa fa-check" title="Click to Clear Student"> <span class="badge badge-warning">Pending</span></i> </a>
-</div>
-
-<?php } ?>
-</td>                   
-<td>
-						<?php if (($row['is_stud_affairs_approved'])==(('1')))  { ?>
-						<div align="center"><span class="badge badge-success">Cleared</span></div>
-							 <?php } else {?>
-<div align="center"><a href="clear_student_affairs.php?id=<?php echo $row['ID'];?>" onClick="return clear_student('<?php echo $row['matric_no']; ?>');"><i class="fa fa-check" title="Click to Clear Student"> <span class="badge badge-warning">Pending</span></i> </a>
-</div>
-
-<?php } ?>
-</td>                   
-                
-					
-                    </tr>
-					<?php } ?>
+                    <?php if (($row['is_kill'])==(('2')))  { ?>
+                      <div align="center"><span class="badge badge-success">Cleared</span></div>
+                      <?php } else {?>
+                        <div align="center"><span class="badge badge-warning">Pending</span>
+                        </div>
+                        <?php } ?>
+                        </td>
+                        <td>
+                        <?php if (($row['is_sport'])==(('2')))  { ?>
+                      <div align="center"><span class="badge badge-success">Cleared</span></div>
+                      <?php } else {?>
+                        <div align="center"><span class="badge badge-warning">Pending</span>
+                        </div>
+                        <?php } ?>
+                        </td>
+                        <td>
+                        <?php if (($row['is_hostel'])==(('2')))  { ?>
+                      <div align="center"><span class="badge badge-success">Cleared</span></div>
+                      <?php } else {?>
+                        <div align="center"><span class="badge badge-warning">Pending</span>
+                        </div>
+                        <?php } ?>
+                        </td>
+                        </tr>
+                        <?php } ?>
                     </tbody>
                     <tfoot>
                     </tfoot>

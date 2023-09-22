@@ -24,50 +24,83 @@ $sql = "select * from students where matric_no='$matric_no'";
 $result = $conn->query($sql);
 $rowaccess = mysqli_fetch_array($result);
 
+// check if student has sent request
+$sqlcheck = "SELECT * FROM clearance_apply WHERE student_id = $ID"; 
+$resultcheck = $conn->query($sqlcheck);
+$row = mysqli_fetch_array($resultcheck);
 
-$sql = "select SUM(amount) as tot_fee from fee where faculty='$faculty' AND dept='$dept'"; 
-$result = $conn->query($sql);
-$row_fee = mysqli_fetch_array($result);
-$tot_fee=$row_fee['tot_fee'];
+$academy_head = $row["is_accademic_head"];
+$faculty_cle = $row["is_faculty"];
+$dip_library = $row["is_dip_library"];
+$kill_library = $row["is_kill"];
+$is_sport = $row["is_sport"];
+$is_hostel = $row["is_hostel"];
 
-//Get outstanding paymentetc
-$sql = "select SUM(amount) as tot_pay from payment where studentID='$ID'"; 
-$result = $conn->query($sql);
-$rowpayment = mysqli_fetch_array($result);
-$tot_pay=$rowpayment['tot_pay'];
-
-$outstanding_fee=$tot_fee-$tot_pay;
-
-if(isset($_POST["btnpay"]))
-{
-
-$amt = mysqli_real_escape_string($conn,$_POST['txtamt']);
-
-if ($amt > $outstanding_fee) {
-$_SESSION['error'] ='Amount Can\'t be greater than Outstanding fee ';
-
-}else {
-//save fee details
-
-$permitted_chars = '0123456789ABCDEFR';
-$feeID = substr(str_shuffle($permitted_chars), 0, 12);
-
-$query = "INSERT into `payment` (feeID,studentID,amount,datepaid)
-VALUES ('$feeID','$ID','$amt','$current_date')";
-
-$result = mysqli_query($conn,$query);
-if($result){
-
-header( "refresh:2;url= pay-fee.php" );
-$_SESSION['success'] ='Fee payment Was Sucessfull';
-}else{
-$_SESSION['error'] ='Problem paying Fee';
-
-}
-}
+if ($academy_head == 1) {
+    $condition = "btn btn-danger disabled";
+    $condition_txt = "Request Sent";
+} else if ($academy_head == 2) {
+    $condition = "btn btn-success disabled";
+    $condition_txt = "Request Approved";
+} else {
+    $condition = "btn btn-primary";
+    $condition_txt = "Send Request";
 }
 
+if ($faculty_cle == 1) {
+    $condition1 = "btn btn-danger disabled";
+    $condition_txt1 = "Request Sent";
+} else if ($faculty_cle == 2) {
+    $condition1 = "btn btn-success disabled";
+    $condition_txt1 = "Request Approved";
+} else {
+    $condition1 = "btn btn-primary";
+    $condition_txt1 = "Send Request";
+}
 
+if ($dip_library == 1) {
+    $condition2 = "btn btn-danger disabled";
+    $condition_txt2 = "Request Sent";
+} else if ($dip_library == 2) {
+    $condition2 = "btn btn-success disabled";
+    $condition_txt2 = "Request Approved";
+} else {
+    $condition2 = "btn btn-primary";
+    $condition_txt2 = "Send Request";
+}
+
+if ($kill_library == 1) {
+    $condition3 = "btn btn-danger disabled";
+    $condition_txt3 = "Request Sent";
+} else if ($kill_library == 2) {
+    $condition3 = "btn btn-success disabled";
+    $condition_txt3 = "Request Approved";
+} else {
+    $condition3 = "btn btn-primary";
+    $condition_txt3 = "Send Request";
+}
+
+if ($is_sport == 1) {
+    $condition4 = "btn btn-danger disabled";
+    $condition_txt4 = "Request Sent";
+} else if ($is_sport == 2) {
+    $condition4 = "btn btn-success disabled";
+    $condition_txt4 = "Request Approved";
+} else {
+    $condition4 = "btn btn-primary";
+    $condition_txt4 = "Send Request";
+}
+
+if ($is_hostel == 1) {
+    $condition5 = "btn btn-danger disabled";
+    $condition_txt5 = "Request Sent";
+} else if ($is_hostel == 2) {
+    $condition5 = "btn btn-success disabled";
+    $condition_txt5 = "Request Approved";
+} else {
+    $condition5 = "btn btn-primary";
+    $condition_txt5 = "Send Request";
+}
 ?>
 
 <!DOCTYPE html>
@@ -78,7 +111,7 @@ $_SESSION['error'] ='Problem paying Fee';
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Fee Payment | Online Student clearance system</title>
+    <title>Apply Clearance | Online Student clearance system</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
@@ -92,23 +125,6 @@ $_SESSION['error'] ='Problem paying Fee';
     <link href="css/animate.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="16x16" href="images/favicon.png">
-
-<script type="text/javascript">
-		function confirmpayment(){
-if(confirm("ARE YOU SURE YOU WISH TO PAY NOW ?" ))
-{
-return  true;
-}
-else {return false;
-}
-	 
-}
-</script>
-<script>
-    if ( window.history.replaceState ) {
-        window.history.replaceState( null, null, window.location.href );
-    }
-</script>
 <style type="text/css">
 <!--
 .style1 {color: #000000}
@@ -206,37 +222,37 @@ else {return false;
                     <tr>
                     <td>Academic Head</td>
                     <td>
-                    <button type='button' id='ac_request' class="btn btn-primary"><i class="fa fa-send"></i> Send Request </button>
+                    <button type='button' id='ac_request' class="<?php echo $condition; ?>"><i class="fa fa-send"></i> <?php echo $condition_txt; ?></button>
                     </td>
                     </tr>
                     <tr>
                     <td>Faculty</td>
                     <td>
-                    <button type='button' id='faculty_request' class="btn btn-primary"><i class="fa fa-send"></i> Send Request </button>
+                    <button type='button' id='faculty_request' class="<?php echo $condition1; ?>"><i class="fa fa-send"></i> <?php echo $condition_txt1; ?></button>
                     </td>
                     </tr>
                     <tr>
                     <td>Departmental Library</td>
                     <td>
-                    <button type='button' id='dipl_request' class="btn btn-primary"><i class="fa fa-send"></i> Send Request </button>
+                    <button type='button' id='dipl_request' class="<?php echo $condition2; ?>"><i class="fa fa-send"></i> <?php echo $condition_txt2; ?></button>
                     </td>
                     </tr>
                     <tr>
                     <td>Kashim Ibrahim Library</td>
                     <td>
-                    <button type='button' id='kil_request' class="btn btn-primary"><i class="fa fa-send"></i> Send Request </button>
+                    <button type='button' id='kil_request' class="<?php echo $condition3; ?>"><i class="fa fa-send"></i> <?php echo $condition_txt3; ?></button>
                     </td>
                     </tr>
                     <tr>
                     <td>Sport</td>
                     <td>
-                    <button type='button' id='sport_request' class="btn btn-primary"><i class="fa fa-send"></i> Send Request </button>
+                    <button type='button' id='sport_request' class="<?php echo $condition4; ?>"><i class="fa fa-send"></i> <?php echo $condition_txt4; ?></button>
                     </td>
                     </tr>
                     <tr>
                     <td>Hall Of Residence</td>
                     <td>
-                    <button type='button' id='hall_request' class="btn btn-primary"><i class="fa fa-send"></i> Apply Request </button>
+                    <button type='button' id='hall_request' class="<?php echo $condition5; ?>"><i class="fa fa-send"></i> <?php echo $condition_txt5; ?></button>
                     </td>
                     </tr>
                 </table>

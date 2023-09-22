@@ -40,12 +40,12 @@ if(empty($_SESSION['matric_no']))
 $checkSQL = "SELECT *
     FROM clearance_apply
     WHERE 
-        is_accademic_head >= 2
-        AND is_faculty >= 2
-        AND is_dip_library >= 2
-        AND is_kill >= 2
-        AND is_sport >= 2
-        AND is_hostel >= 2
+        is_accademic_head = 2
+        AND is_faculty = 2
+        AND is_dip_library = 2
+        AND is_kill = 2
+        AND is_sport = 2
+        AND is_hostel = 2
         AND student_id = $ID";
 
 $checkRslt = $conn->query($checkSQL);
@@ -261,53 +261,64 @@ $rowaccess = mysqli_fetch_array($result);
 				     </td>
 						
                      <td>
-					   	 <?php if ($academy_head < 2)  { ?>
-					   <div align="center"><span class="label label-warning">Pending</span> </div>
-					   <?php } else {?>
+					   	 <?php if ($academy_head == 3)  { ?>
+					   <div align="center"><span class="label label-danger">Rejected</span> </div>
+					   <?php } else if ($academy_head == 2) {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
- 						<?php } ?>
+ 						<?php } else {?>
+                            <div align="center"><span class="label label-warning">Cleared</span> </div>
+                        <?php } ?>
 				     </td>
 
                      <td>
-					   	 <?php if ($faculty_cle < 2)  { ?>
-					   <div align="center"><span class="label label-warning">Pending</span> </div>
-					   <?php } else {?>
+					   	 <?php if ($faculty_cle == 3)  { ?>
+					   <div align="center"><span class="label label-danger">Rejected</span> </div>
+					   <?php } else if ($faculty_cle == 2) {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
- 						<?php } ?>
+ 						<?php } else {?>
+                            <div align="center"><span class="label label-warning">Cleared</span> </div>
+                        <?php } ?>
 				     </td>
 
                      <td>
-					   	 <?php if ($dip_library < 2)  { ?>
-					   <div align="center"><span class="label label-warning">Pending</span> </div>
-					   <?php } else {?>
+					   	 <?php if ($dip_library == 3)  { ?>
+					   <div align="center"><span class="label label-danger">Rejected</span> </div>
+					   <?php } else if ($dip_library == 2) {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
- 						<?php } ?>
+ 						<?php } else {?>
+                            <div align="center"><span class="label label-warning">Cleared</span> </div>
+                        <?php } ?>
 				     </td>
-						
-				       <td>
-					   	 <?php if ($kill_library < 2)  { ?>
-					   <div align="center"><span class="label label-warning">Pending</span> </div>
-					   <?php } else {?>
+
+                     <td>
+					   	 <?php if ($kill_library == 3)  { ?>
+					   <div align="center"><span class="label label-danger">Rejected</span> </div>
+					   <?php } else if ($kill_library == 2) {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
- 						<?php } ?>
+ 						<?php } else {?>
+                            <div align="center"><span class="label label-warning">Cleared</span> </div>
+                        <?php } ?>
 				     </td>
-						
-                      <td>
-					   	 <?php if ($is_sport < 2)  { ?>
-					   <div align="center"><span class="label label-warning">Pending</span> </div>
-					   <?php } else {?>
+
+                     <td>
+					   	 <?php if ($is_sport == 3)  { ?>
+					   <div align="center"><span class="label label-danger">Rejected</span> </div>
+					   <?php } else if ($is_sport == 2) {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
- 						<?php } ?>
+ 						<?php } else {?>
+                            <div align="center"><span class="label label-warning">Cleared</span> </div>
+                        <?php } ?>
 				     </td>
-						
-						
-						 <td>
-					   	 <?php if ($is_hostel < 2)  { ?>
-					   <div align="center"><span class="label label-warning">Pending</span> </div>
-					   <?php } else {?>
+					
+                     <td>
+					   	 <?php if ($is_hostel == 3)  { ?>
+					   <div align="center"><span class="label label-danger">Rejected</span> </div>
+					   <?php } else if ($is_hostel == 2) {?>
 					   <div align="center"><span class="label label-primary">Cleared</span> </div>
- 						<?php } ?>
-					    </td>
+ 						<?php } else {?>
+                            <div align="center"><span class="label label-warning">Cleared</span> </div>
+                        <?php } ?>
+				     </td>
 						
 				    </tr>
                   </tbody>

@@ -2,7 +2,6 @@
  session_start();
  error_reporting(0);
  include('../connect.php');
- include('../connect2.php');
 
 $username=$_SESSION['admin-username'];
 $sql = "select * from admin where username='$username'"; 
@@ -13,35 +12,26 @@ date_default_timezone_set('Africa/Lagos');
 $current_date = date('Y-m-d H:i:s');
 
  
-if(isset($_POST["btnAdd"]))
+if(isset($_POST["btncreate"]))
 {
 
-$faculty = mysqli_real_escape_string($conn,$_POST['facultyName']);
-$dept = mysqli_real_escape_string($conn,$_POST['departmentName']);
-$session = mysqli_real_escape_string($conn,$_POST['cmdsession']);
-$amt = mysqli_real_escape_string($conn,$_POST['txtamt']);
+$departmentname = mysqli_real_escape_string($conn,$_POST['departmentname']);
+$facultyName = mysqli_real_escape_string($conn,$_POST['facultyName']);
 
-
- $sql = "SELECT * FROM fee where session='$session' and faculty='$faculty' and dept='$dept'";
+ $sql = "SELECT * FROM department_tb where department_name='$departmentname'";
 $result = mysqli_query($conn, $sql);
 
 if (mysqli_num_rows($result) > 0) {
-$_SESSION['error'] ='This Fee Already Exist ';
+$_SESSION['error'] =' Department Name Already Exist ';
 
 }else{
-//save fee details
-$query = "INSERT into `fee` (session,faculty,dept,amount)
-VALUES ('$session','$faculty','$dept','$amt')";
-
-
+//save users details
+$query = "INSERT INTO department_tb (faculty_id, department_name) VALUES ('$facultyName','$departmentname')";
     $result = mysqli_query($conn,$query);
       if($result){
-	  //$_SESSION['matric_no']=$matric_no;
-
-$_SESSION['success'] ='Fee Added successfully';
-
+    $_SESSION['success'] ='Department Added Successfully';
 }else{
-$_SESSION['error'] ='Problem Adding fee';
+  $_SESSION['error'] ='Problem Adding Faculty';
 
 }
 }
@@ -53,29 +43,30 @@ $_SESSION['error'] ='Problem Adding fee';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Add fee|Admin Dashboard</title>
+  <title>Create Faculty|Dashboard</title>
  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon.png">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
-
-  <script type="text/javascript">
-		function deldata(){
-if(confirm("ARE YOU SURE YOU WISH TO DELETE THIS FEE ?" ))
-{
-return  true;
-}
-else {return false;
-}
-	 
-}
-
-</script>
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+  <!-- summernote -->
+  <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
 </head>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
 
   <!-- Navbar -->
@@ -158,58 +149,47 @@ else {return false;
     </div>
     <!-- /.sidebar -->
   </aside>
+
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
-    <section class="content-header">
+    <div class="content-header">
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-          </div>
+            <h1 class="m-0 text-dark">&nbsp;</h1>
+          </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Add Fee</li>
+              <li class="breadcrumb-item active">Create Faculty </li>
             </ol>
-          </div>
-        </div>
+          </div><!-- /.col -->
+        </div><!-- /.row -->
       </div><!-- /.container-fluid -->
-    </section>
+    </div>
+    <!-- /.content-header -->
 
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+        <!-- Small boxes (Stat box) -->
         <div class="row">
-          <!-- left column -->
-          <div class="col-md-4">
-            <!-- general form elements -->
+        
+		 <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Add New Fee</h3>
+                <h3 class="card-title">Create Faculty </h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
-              <form id="form" action="" method="post" class="">
+               <form id="form" action="" method="post" class="">
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Session </label>
-                    <?php
-//Our select statement. This will retrieve the data that we want.
-$sql = "SELECT * FROM tblsession";
-//Prepare the select statement.
-$stmt = $dbh->prepare($sql);
-//Execute the statement.
-$stmt->execute();
-//Retrieve the rows using fetchAll.
-$sessions = $stmt->fetchAll();
-?>
-      <select name="cmdsession" id="select" class="form-control" required="">
-    <?php foreach($sessions as $row_session): ?>
-        <option value="<?= $row_session['session']; ?>"><?= $row_session['session']; ?></option>
-    <?php endforeach; ?>
-</select>               
-   </div>
-   <div class="form-group">
+                    <label for="exampleInputEmail1">Department Name </label>
+                    <input type="text" class="form-control" name="departmentname" id="exampleInputEmail1" size="77" value="<?php if (isset($_POST['departmentname']))?><?php echo $_POST['departmentname']; ?>" placeholder="Enter Username">
+                  </div>
+                  <div class="form-group">
                     <label for="exampleInputPassword1">Faculty</label>
                     <select name="facultyName" id="select" class="form-control" required="">
                     <option value="Select Department">Select Faculty</option>
@@ -223,122 +203,35 @@ $sessions = $stmt->fetchAll();
                     }
                     ?>
                     </select> 
-                    </div>
-                    <div class="form-group">
-                    <label for="exampleInputPassword1">Department</label>
-                    <select name="departmentName" id="select" class="form-control" required="">
-                    <option value="Select Department">Select Department</option>
-                    <?php
-                    $sqldep = "select * from department_tb"; 
-                    $resultd = $conn->query($sqldep);
-                    while ($row = mysqli_fetch_array($resultd)) {
-                      ?>
-                      <option value="<?php echo $row['id']; ?>"><?php echo $row['department_name']; ?></option>
-                      <?php
-                    }
-                    ?>
-                    </select> 
-                    </div>
-
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Amount (NGN) </label>
-                    <input type="text" class="form-control" name="txtamt" id="exampleInputEmail1" size="77" value="<?php if (isset($_POST['txtamt']))?><?php echo $_POST['txtamt']; ?>" placeholder="Enter Amount">
-                  </div>
-                
-		   </div>
+                    </div>                
+				 
+                </div>
                 <!-- /.card-body -->
+
                 <div class="card-footer">
-                  <button type="submit" name="btnAdd" class="btn btn-primary">Add</button>
+                  <button type="submit" name="btncreate" class="btn btn-primary">Add Department</button>
                 </div>
               </form>
             </div>
-            <!-- /.card -->
-
-           
-          </div>
-          <!--/.col (left) -->
-          <!-- right column -->
-          <div class="col-md-8">
-            <!-- general form elements disabled -->
-            <div class="card card-warning">
-              <div class="card-header">
-                <h3 class="card-title">Fee Structure</h3>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body">
-                  <table width="106%" align="center" class="table table-bordered table-striped" id="example1">
-                    <thead>
-                    <tr> <th width="3%"><div align="center">#</div></th>
-                        <th width="13%"><div align="center">Faculty</div></th>
-							          <th width="8%"><div align="center">Department</div></th>
-                        <th width="7%"><div align="center">Session</div></th>
-                        <th width="6%"><div align="center">Amount</div></th>
-                        <th width="6%"><div align="center">Action</div></th>
-
-                        </tr>
-                    </thead>
-                      <div align="center"></div>
-                    
-                    <tbody>
-                                         <?php 
-                                          $sql = "SELECT * FROM fee INNER JOIN faculty_tb ON fee.faculty = faculty_tb.id INNER JOIN department_tb ON fee.dept = department_tb.id ORDER BY fee.session ASC";
-                                           $result = $conn->query($sql); 
-										$cnt=1;
-                                           while($row = $result->fetch_assoc()) { ?>
-                      <tr class="gradeX">
-					  <td height="47"><div align="center"><?php echo $cnt; ?></div></td>
-                        <td><div align="center"><?php echo $row['faculty_name']; ?></div></td>
-                    <td><div align="center"><?php echo $row['department_name']; ?></div></td>
-                    <td><div align="center"><?php echo $row['session']; ?></div></td>
-                     <td><div align="center">NGN<?php echo number_format((float) $row['amount'] ,2); ?></div></td>
-                     <td>     <div class="btn-group">
-                    <button type="button" class="btn btn-danger btn-flat">Action</button>
-                    <button type="button" class="btn btn-danger btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
-                      <span class="sr-only">Toggle Dropdown</span>
-                    </button>
-                    <div class="dropdown-menu" role="menu">
-							     
-                      <a class="dropdown-item" href="delete-fee.php?id=<?php echo $row['ID'];?>" onClick="return deldata();">Delete</a>
-                    </div>
-                  </div>
-                </td>
-                    </tr>
-					<?php $cnt=$cnt+1;} ?>
-                    </tbody>
-                    <tfoot>
-                    </tfoot>
-                  </table>
-				  
-                </div>
-                <!-- /.card-body -->
-              </div>
-                <table width="392" border="0" align="right">
-                  <tr>
-                    <td width="386"></td>
-                  </tr>
-                </table>
-                <p>&nbsp;</p>
-              </td>
-            </tr>
-			
-          </table>
-          <p>
-            <!-- /.card -->
-                     <!-- /.card -->
-          </div>
-          <!--/.col (right) -->
+		
         </div>
         <!-- /.row -->
+        <!-- Main row -->
+        <div class="row">
+          <!-- Left col --><!-- /.Left col -->
+          <!-- right col (We are only adding the ID to make the widgets sortable)--><!-- right col -->
+        </div>
+        <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
     </section>
     <!-- /.content -->
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <div class="float-right d-none d-sm-block">
+    <?php include('footer.php');  ?>
+    <div class="float-right d-none d-sm-inline-block">
       
     </div>
-    <strong><?php include '../footer.php' ?>
   </footer>
 
   <!-- Control Sidebar -->
@@ -351,21 +244,39 @@ $sessions = $stmt->fetchAll();
 
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
+<!-- jQuery UI 1.11.4 -->
+<script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+<script>
+  $.widget.bridge('uibutton', $.ui.button)
+</script>
 <!-- Bootstrap 4 -->
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- bs-custom-file-input -->
-<script src="plugins/bs-custom-file-input/bs-custom-file-input.min.js"></script>
+<!-- ChartJS -->
+<script src="plugins/chart.js/Chart.min.js"></script>
+<!-- Sparkline -->
+<script src="plugins/sparklines/sparkline.js"></script>
+<!-- JQVMap -->
+<script src="plugins/jqvmap/jquery.vmap.min.js"></script>
+<script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
+<!-- jQuery Knob Chart -->
+<script src="plugins/jquery-knob/jquery.knob.min.js"></script>
+<!-- daterangepicker -->
+<script src="plugins/moment/moment.min.js"></script>
+<script src="plugins/daterangepicker/daterangepicker.js"></script>
+<!-- Tempusdominus Bootstrap 4 -->
+<script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+<!-- Summernote -->
+<script src="plugins/summernote/summernote-bs4.min.js"></script>
+<!-- overlayScrollbars -->
+<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
-<script src="dist/js/adminlte.min.js"></script>
+<script src="dist/js/adminlte.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="dist/js/demo.js"></script>
-<!-- Page specific script -->
-<script>
-$(function () {
-  bsCustomFileInput.init();
-});
-</script>
-
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="dist/js/pages/dashboard.js"></script>
+	
 <link rel="stylesheet" href="popup_style.css">
 <?php if(!empty($_SESSION['success'])) {  ?>
 <div class="popup popup--icon -success js_success-popup popup--visible">

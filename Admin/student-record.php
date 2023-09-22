@@ -164,13 +164,7 @@ else {return false;
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-               <?php
-                if ($user_type == 'Admin') {
-                  include('sidebar.php'); 
-                } else {
-                  include('office-sidebar.php'); 
-                }
-                ?>
+               <?php include('sidebar.php'); ?>
 		 
 		 
         </ul>
@@ -231,7 +225,7 @@ else {return false;
                     
                     <tbody>
                                       <?php 
-                                          $sql = "SELECT * FROM students order by ID ASC";
+                                          $sql = "SELECT * FROM students INNER JOIN faculty_tb ON students.faculty = faculty_tb.id INNER JOIN department_tb ON students.dept = department_tb.id ORDER BY students.ID ASC";
                                            $result = $conn->query($sql);
                                            while($row = $result->fetch_assoc()) { ?>
                       <tr class="gradeX">
@@ -240,8 +234,8 @@ else {return false;
                         <td><div align="center"><?php echo $row['phone']; ?></div></td>
                         <td><div align="center"><?php echo $row['matric_no']; ?></div></td>
                         <td><div align="center"><?php echo $row['password']; ?></div></td>
-                        <td><div align="center"><?php echo $row['faculty']; ?></div></td>
-                        <td><div align="center"><?php echo $row['dept']; ?></div></td>
+                        <td><div align="center"><?php echo $row['faculty_name']; ?></div></td>
+                        <td><div align="center"><?php echo $row['department_name']; ?></div></td>
                         <td>     <div class="btn-group">
                     <button type="button" class="btn btn-danger btn-flat">Action</button>
                     <button type="button" class="btn btn-danger btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">

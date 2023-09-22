@@ -2,7 +2,6 @@
  session_start();
  error_reporting(0);
  include('../connect.php');
- include('../connect2.php');
 
 $username=$_SESSION['admin-username'];
 $sql = "select * from admin where username='$username'"; 
@@ -13,60 +12,25 @@ date_default_timezone_set('Africa/Lagos');
 $current_date = date('Y-m-d H:i:s');
 
  
-if(isset($_POST["btnregister"]))
+if(isset($_POST["btncreate"]))
 {
 
+$facultyname = mysqli_real_escape_string($conn,$_POST['facultyname']);
 
-  $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyz';
-  $password_stud = substr(str_shuffle($permitted_chars), 0, 6);
-
-$fullname = mysqli_real_escape_string($conn,$_POST['txtfullname']);
-$matric_no = mysqli_real_escape_string($conn,$_POST['txtmatric_no']);
-$phone = mysqli_real_escape_string($conn,$_POST['txtphone']);
-$session = mysqli_real_escape_string($conn,$_POST['cmdsession']);
-$faculty = mysqli_real_escape_string($conn,$_POST['cmdfaculty']);
-$dept = mysqli_real_escape_string($conn,$_POST['cmddept']);
-$phone = mysqli_real_escape_string($conn,$_POST['txtphone']);
-
-
- $sql = "SELECT * FROM students where matric_no='$matric_no'";
+ $sql = "SELECT * FROM faculty_tb where faculty_name='$facultyname'";
 $result = mysqli_query($conn, $sql);
 
 if (mysqli_num_rows($result) > 0) {
-$_SESSION['error'] =' Matric No already Exist ';
+$_SESSION['error'] =' Faculty Name Already Exist ';
 
 }else{
 //save users details
-$query = "INSERT into `students` (fullname,matric_no,password,session,faculty,dept,phone,photo)
-VALUES ('$fullname','$matric_no','$password_stud','$session','$faculty','$dept','$phone','uploads/avatar_nick.png')";
-
-
+$query = "INSERT INTO faculty_tb(faculty_name) VALUES ('$facultyname')";
     $result = mysqli_query($conn,$query);
       if($result){
-	  $_SESSION['matric_no']=$matric_no;
-
-//SEnd password Via SMS
-$username='rexrolex0@gmail.com';//Note: urlencodemust be added forusernameand 
-$password='admin123';// passwordas encryption code for security purpose.
-
-$sender='AUTHUR-JAVI';
-$message  = 'Dear '.$fullname.', Your password for online clearance system is :'.$password_stud.' ';
-$api_url  = 'https://portal.nigeriabulksms.com/api/';
-
-//Create the message data
-$data = array('username'=>$username, 'password'=>$password, 'sender'=>$sender, 'message'=>$message, 'mobiles'=>$phone);
-//URL encode the message data
-$data = http_build_query($data);
-//Send the message
-$request = $api_url.'?'.$data;
-$result  = file_get_contents($request);
-$result  = json_decode($result);
-
-
-$_SESSION['success'] ='Student Registration was successful';
-
+    $_SESSION['success'] ='Faculty Added Successfully';
 }else{
-$_SESSION['error'] ='Problem registering student';
+  $_SESSION['error'] ='Problem Adding Faculty';
 
 }
 }
@@ -78,7 +42,7 @@ $_SESSION['error'] ='Problem registering student';
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Register Student|Dashboard</title>
+  <title>Create Faculty|Dashboard</title>
  <link rel="icon" type="image/png" sizes="16x16" href="../images/favicon.png">
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -197,7 +161,7 @@ $_SESSION['error'] ='Problem registering student';
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Register Student</li>
+              <li class="breadcrumb-item active">Create Faculty </li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -214,79 +178,22 @@ $_SESSION['error'] ='Problem registering student';
 		 <!-- general form elements -->
             <div class="card card-primary">
               <div class="card-header">
-                <h3 class="card-title">Register Student </h3>
+                <h3 class="card-title">Create Faculty </h3>
               </div>
               <!-- /.card-header -->
               <!-- form start -->
                <form id="form" action="" method="post" class="">
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="exampleInputEmail1">Fullname </label>
-                    <input type="text" class="form-control" name="txtfullname" id="exampleInputEmail1" size="77" value="<?php if (isset($_POST['txtfullname']))?><?php echo $_POST['txtfullname']; ?>" placeholder="Enter Fullname">
-                  </div>
-				   <div class="form-group">
-                    <label for="exampleInputEmail1">Matric No. </label>
-                    <input type="text" class="form-control" name="txtmatric_no" id="exampleInputEmail1" size="77" value="<?php if (isset($_POST['txtmatric_no']))?><?php echo $_POST['txtmatric_no']; ?>" placeholder="Enter Matric No.">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="exampleInputEmail1">Phone No. </label>
-                    <input type="text" class="form-control" name="txtphone" id="exampleInputEmail1" size="77" value="<?php if (isset($_POST['txtphone']))?><?php echo $_POST['txtphone']; ?>" placeholder="Enter Phone">
-                  </div>
-
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">Session</label>
-                    <?php
-                    //Our select statement. This will retrieve the data that we want.
-                    $sql = "SELECT * FROM tblsession";
-                    //Prepare the select statement.
-                    $stmt = $dbh->prepare($sql);
-                    //Execute the statement.
-                    $stmt->execute();
-                    //Retrieve the rows using fetchAll.
-                    $sessions = $stmt->fetchAll();
-                    ?>
-                    <select name="cmdsession" id="select" class="form-control" required="">
-                    <?php foreach($sessions as $row_session): ?>
-                        <option value="<?= $row_session['session']; ?>"><?= $row_session['session']; ?></option>
-                    <?php endforeach; ?>
-                    </select>
-                  
-                  </div>
-                  <div class="form-group">
-                    <label for="exampleInputPassword1">Faculty</label>
-                    <select name="cmdfaculty" id="select" class="form-control" required="">
-                    <option value="Select faculty">Select faculty</option>
-                    <?php
-                    $sqlfaculty = "select * from faculty_tb"; 
-                    $resultf = $conn->query($sqlfaculty);
-                    while ($row = mysqli_fetch_array($resultf)) {
-                      ?>
-                      <option value="<?php echo $row['id']; ?>'"><?php echo $row['faculty_name']; ?></option>
-                      <?php
-                    }
-                    ?>
-                  </select>  
-                  </div>
-                    <div class="form-group">
-                    <label for="exampleInputPassword1">Department</label>
-                    <select name="cmddept" id="select" class="form-control" required="">
-                      <option value="Select Department">Select Department</option>
-                      <?php
-                    $sqldep = "select * from department_tb"; 
-                    $resultd = $conn->query($sqldep);
-                    while ($row = mysqli_fetch_array($resultd)) {
-                      ?>
-                      <option value="<?php echo $row['id']; ?>"><?php echo $row['department_name']; ?></option>
-                      <?php
-                    }
-                    ?>
-                    </select>  
-                  </div>
+                    <label for="exampleInputEmail1">Faculty Name </label>
+                    <input type="text" class="form-control" name="facultyname" id="exampleInputEmail1" size="77" value="<?php if (isset($_POST['facultyname']))?><?php echo $_POST['facultynamea']; ?>" placeholder="Enter Username">
+                  </div>                  
+				 
                 </div>
                 <!-- /.card-body -->
+
                 <div class="card-footer">
-                  <button type="submit" name="btnregister" class="btn btn-primary">Register Student</button>
+                  <button type="submit" name="btncreate" class="btn btn-primary">Add Faculty</button>
                 </div>
               </form>
             </div>
@@ -305,7 +212,7 @@ $_SESSION['error'] ='Problem registering student';
   </div>
   <!-- /.content-wrapper -->
   <footer class="main-footer">
-    <?php include('../footer.php');  ?>
+    <?php include('footer.php');  ?>
     <div class="float-right d-none d-sm-inline-block">
       
     </div>

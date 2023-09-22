@@ -21,6 +21,8 @@ $email = mysqli_real_escape_string($conn,$_POST['txtemail']);
 $password = mysqli_real_escape_string($conn,$_POST['txtpassword']);
 $password2 = mysqli_real_escape_string($conn,$_POST['txtpassword2']);
 $designation = mysqli_real_escape_string($conn,$_POST['cmddesignation']);
+$faculty = mysqli_real_escape_string($conn,$_POST['facultyName']);
+$department = mysqli_real_escape_string($conn,$_POST['departmentName']);
 
 
  $sql = "SELECT * FROM admin where username='$username'";
@@ -38,10 +40,8 @@ $_SESSION['error'] ='Password must be at least 8 characters';
 
 }else{
 //save users details
-$query = "INSERT into `admin` (username,password,designation,fullname,email,status,photo)
-VALUES ('$username','$password','$designation','$fullname','$email','Active','uploads/avatar_nick.png')";
-
-
+$query = "INSERT into admin (faculty_id,department_id,username,password,designation,fullname,email,status,photo)
+VALUES ('$faculty','$department','$username','$password','$designation','$fullname','$email','Active','uploads/avatar_nick.png')";
     $result = mysqli_query($conn,$query);
       if($result){
 	  $_SESSION['email']=$email;
@@ -208,7 +208,7 @@ VALUES ('$username','$password','$designation','$fullname','$email','Active','up
                     <label for="exampleInputEmail1">Username </label>
                     <input type="text" class="form-control" name="txtusername" id="exampleInputEmail1" size="77" value="<?php if (isset($_POST['txtusername']))?><?php echo $_POST['txtusername']; ?>" placeholder="Enter Username">
                   </div>
-				   <div class="form-group">
+                  <div class="form-group">
                     <label for="exampleInputEmail1">Fullname </label>
                     <input type="text" class="form-control" name="txtfullname" id="exampleInputEmail1" size="77" value="<?php if (isset($_POST['txtfullname']))?><?php echo $_POST['txtfullname']; ?>" placeholder="Enter Fullname">
                   </div>
@@ -220,17 +220,49 @@ VALUES ('$username','$password','$designation','$fullname','$email','Active','up
                     <label for="exampleInputPassword1">Re-Password</label>
                     <input type="password" class="form-control" name="txtpassword2" id="exampleInputPassword1" size="77" value="<?php if (isset($_POST['txtpassword2']))?><?php echo $_POST['txtpassword2']; ?>" placeholder="Confirm Password">
                   </div>
-				  <div class="form-group">
+                  <div class="form-group">
+                    <label for="exampleInputPassword1">Faculty</label>
+                    <select name="facultyName" id="select" class="form-control" required="">
+                    <option value="Select Department">Select Faculty</option>
+                    <?php
+                    $sqlfaculty = "select * from faculty_tb"; 
+                    $resultf = $conn->query($sqlfaculty);
+                    while ($row = mysqli_fetch_array($resultf)) {
+                      ?>
+                      <option value="<?php echo $row['id']; ?>'"><?php echo $row['faculty_name']; ?></option>
+                      <?php
+                    }
+                    ?>
+                    </select> 
+                    </div>
+                    <div class="form-group">
+                    <label for="exampleInputPassword1">Department</label>
+                    <select name="departmentName" id="select" class="form-control" required="">
+                    <option value="Select Department">Select Department</option>
+                    <?php
+                    $sqldep = "select * from department_tb"; 
+                    $resultd = $conn->query($sqldep);
+                    while ($row = mysqli_fetch_array($resultd)) {
+                      ?>
+                      <option value="<?php echo $row['id']; ?>"><?php echo $row['department_name']; ?></option>
+                      <?php
+                    }
+                    ?>
+                    </select> 
+                    </div>
+                  <div class="form-group">
                     <label for="exampleInputPassword1">Designation</label>
                     <select name="cmddesignation" id="select" class="form-control" required="">
-    <option value="Select Designation">Select Designation</option>
-   <option value="Super Admin">Super Admin</option>
-   <option value="Librarian">Librarian</option>
-   <option value="Bursar">Bursar</option>
-   <option value="Sport Director">Sport Director</option>
-
-   </select> 
-                     </div>
+                    <option value="Select Designation">Select Designation</option>
+                    <option value="Super Admin">Super Admin</option>
+                    <option value="Academy_head">Academy Head</option>
+                    <option value="faculty">Faculty Deans</option>
+                    <option value="dip_library">Department Library</option>
+                    <option value="kil_library">Kil Library</option>
+                    <option value="sport_head">Sport Unit</option>
+                    <option value="hall_admin">Hall Admin</option>
+                    </select> 
+                    </div>
                   <div class="form-group">
                     <label for="exampleInputPassword1">Email</label>
                     <input type="text" class="form-control" name="txtemail" id="exampleInputPassword1" size="77" value="<?php if (isset($_POST['txtemail']))?><?php echo $_POST['txtemail']; ?>" placeholder="Enter Email">
